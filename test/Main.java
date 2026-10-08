@@ -1,6 +1,7 @@
 import model.*; 
 import layanan.InventarisLab;
 import layanan.LayananPeminjaman;
+import layanan.ValidatorAlat; // Tambahan import untuk validator
 import transaksi.*;
 import pembanding.*;
 import eksepsi.*;
@@ -61,7 +62,12 @@ public class Main {
         Laptop lap2 = new Laptop("LP-002", "HP ProBook 450", 2022, 8, false); // Contoh alat belum siap
         cobaPinjam(layananPeminjaman, mhs, ptg, lap2);
 
-        // Uji Tangguh Input Tahun (Langkah E.4)[cite: 21]
+        // 4. Pengujian Job Sheet 6 - Validasi Masukan dengan ValidatorAlat (Langkah E.4)
+        System.out.println("\n--- UJI VALIDASI MASUKAN / VALIDATOR ALAT (JS 6) ---");
+        Laptop alatInvalid = new Laptop("LP-999", "Laptop Invalid", 1850, 8, true); // Tahun perolehan tidak valid (< 1990)
+        cobaValidasiAlat(alatInvalid);
+
+        // Uji Tangguh Input Tahun (Langkah E.4)
         System.out.println("\n--- UJI TANGGUH INPUT TAHUN (JS 6) ---");
         // Uncomment baris di bawah ini kalau mau menguji input interaktif tahun di terminal:
         // ujiTangguh();
@@ -79,7 +85,18 @@ public class Main {
         }
     }
 
-    // Method untuk uji tangguh input tahun agar tidak crash (Job Sheet 6 - Langkah E.4)[cite: 21]
+    // Method baru untuk menguji ValidatorAlat (Job Sheet 6 - Langkah E.4)
+    private static void cobaValidasiAlat(Alat alat) {
+        ValidatorAlat validator = new ValidatorAlat();
+        try {
+            validator.periksa(alat);
+            System.out.println(" VALID: Data alat " + alat.getKodeAlat() + " sah.");
+        } catch (DataTidakValidException e) {
+            System.out.println(" INVALID [" + e.getNamaKolom() + "]: " + e.getMessage());
+        }
+    }
+
+    // Method untuk uji tangguh input tahun agar tidak crash (Job Sheet 6 - Langkah E.4)
     public static void ujiTangguh() {
         Scanner masukan = new Scanner(System.in);
         System.out.print("Masukkan tahun perolehan: ");

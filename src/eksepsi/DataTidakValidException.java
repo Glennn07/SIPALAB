@@ -1,7 +1,15 @@
 package eksepsi;
 
 public class DataTidakValidException extends SipalabException {
-    public DataTidakValidException(String field, String pesan) {
-        super("Data tidak valid pada " + field + ": " + pesan);
+    private final String namaKolom;
+
+    public DataTidakValidException(String namaKolom, String pesan) {
+        super(pesan);
+        this.namaKolom = namaKolom; // Pastikan ini ada
+    }
+
+    // Tambahkan method getter ini kalau belum ada
+    public String getNamaKolom() { 
+        return namaKolom; 
     }
 }
