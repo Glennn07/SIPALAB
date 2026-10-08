@@ -4,10 +4,11 @@ import layanan.LayananPeminjaman;
 import transaksi.*;
 import pembanding.*;
 import eksepsi.*;
+import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        System.out.println("=== PENGUJIAN LENGKAP SISTEM SIPALAB (JS 3, 4, & 5) ===");
+        System.out.println("=== PENGUJIAN LENGKAP SISTEM SIPALAB (JS 3, 4, 5, & 6) ===");
         
         // 1. Pengujian Job Sheet 3 & 5 (Inventaris, List, Map, Alat)
         InventarisLab inventaris = new InventarisLab();
@@ -41,7 +42,7 @@ public class Main {
         lab.tambahAlat(pro);
         System.out.println("Jumlah alat di lab: " + lab.jumlahAlat());
 
-        // Peminjaman menggunakan Layanan & Eksepsi - Job Sheet 5
+        // Peminjaman menggunakan Layanan & Eksepsi - Job Sheet 5 & 6
         LayananPeminjaman layananPeminjaman = new LayananPeminjaman();
         try {
             Peminjaman pinjam = layananPeminjaman.pinjam(mhs, ptg, lap, 1);
@@ -54,7 +55,39 @@ public class Main {
         } catch (SipalabException e) {
             System.out.println("Tertangkap Exception: " + e.getMessage());
         }
+
+        // 3. Pengujian Job Sheet 6 (Custom Exception & Aturan Bisnis)[cite: 17, 20]
+        System.out.println("\n--- UJI ATURAN BISNIS & EKSEPSI (JS 6) ---");
+        Laptop lap2 = new Laptop("LP-002", "HP ProBook 450", 2022, 8, false); // Contoh alat belum siap
+        cobaPinjam(layananPeminjaman, mhs, ptg, lap2);
+
+        // Uji Tangguh Input Tahun (Langkah E.4)[cite: 21]
+        System.out.println("\n--- UJI TANGGUH INPUT TAHUN (JS 6) ---");
+        // Uncomment baris di bawah ini kalau mau menguji input interaktif tahun di terminal:
+        // ujiTangguh();
         
         System.out.println("\n=== PENGUJIAN SELESAI ===");
+    }
+
+    // Method untuk menguji aturan bisnis peminjaman (Job Sheet 6 - Langkah E.3)[cite: 20]
+    private static void cobaPinjam(LayananPeminjaman layanan, Mahasiswa mhs, Petugas ptg, Alat alat) {
+        try {
+            Peminjaman p = layanan.pinjam(mhs, ptg, alat, 1);
+            System.out.println(" BERHASIL " + p.getNomorPeminjaman());
+        } catch (SipalabException e) {
+            System.out.println(" DITOLAK " + e.getMessage());
+        }
+    }
+
+    // Method untuk uji tangguh input tahun agar tidak crash (Job Sheet 6 - Langkah E.4)[cite: 21]
+    public static void ujiTangguh() {
+        Scanner masukan = new Scanner(System.in);
+        System.out.print("Masukkan tahun perolehan: ");
+        try {
+            int tahun = Integer.parseInt(masukan.nextLine());
+            System.out.println("Tahun tercatat: " + tahun);
+        } catch (NumberFormatException e) {
+            System.out.println("Tahun harus berupa angka, contoh 2024.");
+        }
     }
 }
